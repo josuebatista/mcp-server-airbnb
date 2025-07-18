@@ -1,0 +1,61 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: airbnb-mcp-server
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/execution-environment: gen2
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/cpu-boost: true
+        run.googleapis.com/execution-environment: gen2
+        run.googleapis.com/memory: 512Mi
+        run.googleapis.com/cpu: 1000m
+        run.googleapis.com/max-scale: 10
+        run.googleapis.com/min-scale: 0
+    spec:
+      containerConcurrency: 100
+      timeoutSeconds: 300
+      containers:
+      - image: gcr.io/PROJECT_ID/airbnb-mcp-server:latest
+        ports:
+        - containerPort: 3000
+          name: http1
+        env:
+        - name: PORT
+          value: "3000"
+        - name: MCP_MODE
+          value: "http"
+        - name: MCP_ACCESS_TOKENS
+          valueFrom:
+            secretKeyRef:
+              name: mcp-access-tokens
+              key: tokens
+        - name: ALLOWED_ORIGINS
+          value: "*"
+        - name: IGNORE_ROBOTS_TXT
+          value: "false"
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+  traffic:
+  - percent: 100
+    latestRevision: true
