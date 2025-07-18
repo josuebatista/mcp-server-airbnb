@@ -9,12 +9,12 @@ spec:
   template:
     metadata:
       annotations:
-        run.googleapis.com/cpu-boost: true
+        run.googleapis.com/cpu-boost: "true"
         run.googleapis.com/execution-environment: gen2
         run.googleapis.com/memory: 512Mi
         run.googleapis.com/cpu: 1000m
-        run.googleapis.com/max-scale: 10
-        run.googleapis.com/min-scale: 0
+        run.googleapis.com/max-scale: "10"
+        run.googleapis.com/min-scale: "0"
     spec:
       containerConcurrency: 100
       timeoutSeconds: 300
@@ -32,7 +32,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: mcp-access-tokens
-              key: tokens
+              key: latest
         - name: ALLOWED_ORIGINS
           value: "*"
         - name: IGNORE_ROBOTS_TXT

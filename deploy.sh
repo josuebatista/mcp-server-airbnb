@@ -60,6 +60,8 @@ if ! gcloud secrets describe mcp-access-tokens >/dev/null 2>&1; then
     echo -e "${GREEN}✅ Secret created successfully${NC}"
 else
     echo -e "${GREEN}✅ Secret already exists${NC}"
+    echo -e "${YELLOW}⚠️  To update the secret, run:${NC}"
+    echo "echo 'your-new-tokens' | gcloud secrets versions add mcp-access-tokens --data-file=-"
 fi
 
 # Update cloud-run.yaml with correct project ID
