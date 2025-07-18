@@ -20,7 +20,7 @@ const mode = useHttpMode ? 'http' : 'stdio';
 
 if (mode === 'http') {
   // HTTP mode
-  const port = parseInt(process.env.PORT || '3000');
+  const port = parseInt(process.env.PORT || '8080');
   
   log('info', 'Starting HTTP MCP Server', {
     version: VERSION,

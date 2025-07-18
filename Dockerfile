@@ -16,7 +16,6 @@ FROM node:lts-alpine AS production
 
 # Set environment variables
 ENV NODE_ENV=production
-ENV PORT=3000
 ENV MCP_MODE=http
 
 # Create app directory and non-root user
@@ -37,13 +36,14 @@ COPY --from=builder /app/package.json ./package.json
 RUN chown -R nodejs:nodejs /app
 USER nodejs
 
-# Expose the HTTP port
-EXPOSE 3000
+# Expose the HTTP port (Cloud Run will set the actual port via PORT env var)
+EXPOSE 8080
 
-# Health check
+# Health check using the PORT environment variable
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD node -e "const http = require('http'); \
-    const req = http.request({hostname: 'localhost', port: 3000, path: '/health', method: 'GET'}, (res) => { \
+    const port = process.env.PORT || 8080; \
+    const req = http.request({hostname: 'localhost', port: port, path: '/health', method: 'GET'}, (res) => { \
       if (res.statusCode === 200) { console.log('OK'); process.exit(0); } \
       else { console.log('FAIL'); process.exit(1); } \
     }); \

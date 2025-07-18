@@ -306,7 +306,7 @@ class HTTPMCPServer {
     }
   }
 
-  public async start(port: number = 3000): Promise<void> {
+  public async start(port: number = parseInt(process.env.PORT || '8080')): Promise<void> {
     try {
       // Initialize robots.txt
       await fetchRobotsTxt();

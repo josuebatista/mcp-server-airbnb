@@ -19,11 +19,13 @@ spec:
       containerConcurrency: 100
       timeoutSeconds: 300
       containers:
-      - image: gcr.io/PROJECT_ID/airbnb-mcp-server:latest
+      - image: gcr.io/abcs-test-ai-agent-001/airbnb-mcp-server:latest
         ports:
-        - containerPort: 8080
+        - containerPort: 3000
           name: http1
         env:
+        - name: PORT
+          value: "3000"
         - name: MCP_MODE
           value: "http"
         - name: MCP_ACCESS_TOKENS
@@ -45,7 +47,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /health
-            port: 8080
+            port: 3000
           initialDelaySeconds: 15
           periodSeconds: 20
           timeoutSeconds: 5
@@ -53,7 +55,7 @@ spec:
         startupProbe:
           httpGet:
             path: /health
-            port: 8080
+            port: 3000
           initialDelaySeconds: 5
           periodSeconds: 10
           timeoutSeconds: 5
